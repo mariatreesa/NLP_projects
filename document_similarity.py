@@ -88,9 +88,9 @@ def vector_encoder(data: str, total_vocab: List[str], N: int) -> np.ndarray:
     return Q_vec
 
 
-def cosine_sim(a: np.ndarray, b: np.ndarray):
+def cosine_sim(v1: np.ndarray, v2: np.ndarray):
     """Returns cosine similarity"""
-    cos_sim = np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b))
+    cos_sim = np.dot(v1, v2) / (np.linalg.norm(v1) * np.linalg.norm(v2))
     return cos_sim
 
 
