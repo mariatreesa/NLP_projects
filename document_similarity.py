@@ -1,5 +1,5 @@
 import numpy as np
-from typing import List, Callable
+from typing import List, Callable, Dict
 import nltk
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
@@ -45,7 +45,7 @@ def find_similar_document(
         words_count = len(processed_documents[i])
         for token in np.unique(processed_documents[i]):
             tf = token_dict[token] / words_count
-            df = get_document_freq(token)
+            df = get_document_freq(doc_freq, token)
             idf = np.log((N + 1) / (df + 1))
             tf_idf[i, token] = tf * idf
 
@@ -70,7 +70,7 @@ def find_similar_document(
     return similar_doc
 
 
-def vector_encoder(data: str, total_vocab: List[str], N: int) -> np.ndarray:
+def vector_encoder(data: str, total_vocab: List[str], N: int, doc_freq: Dict[str, int]) -> np.ndarray:
     """Gives the corresponding vector representation of a query"""
     tokens = word_tokenize(str(data))
     Q_vec = np.zeros((len(total_vocab)))
@@ -78,7 +78,7 @@ def vector_encoder(data: str, total_vocab: List[str], N: int) -> np.ndarray:
     words_count = len(tokens)
     for token in np.unique(tokens):
         tf = counter[token] / words_count
-        df = get_document_freq(token)
+        df = get_document_freq(doc_freq, token)
         idf = np.log((N + 1) / (df + 1))
         try:
             ind = total_vocab.index(token)
@@ -132,7 +132,7 @@ def lemma_string(data: str) -> str:
     return new_text
 
 
-def preprocess(text) -> str:
+def preprocess(text: str) -> str:
     """Preprocess a string using a set of defined rules."""
     text = convert_lower_case(text)
     text = remove_punctuation(text)
@@ -141,7 +141,7 @@ def preprocess(text) -> str:
     return text
 
 
-def get_document_freq(doc_freq, word):
+def get_document_freq(doc_freq, word:str):
     f = 0
     try:
         f = doc_freq[word]
